@@ -18,3 +18,7 @@ There is an example shortcut already in the assets folder for MS Paint.
 
 Build cmd:
 	pyinstaller --onefile -w --icon=./assets/application_icon/ring.ico main.py
+
+# Last notes
+
+If you encounter a problem make an issue report in the GitHub issue tracker for the project.
