@@ -1,14 +1,13 @@
-import functools
-import os
+from os import path, listdir
 from json import load as json_load
 from json import dump as json_dump
 from random import choice as ran_choice
 from dataclasses import dataclass
 from os import mkdir, system
+from math import cos, pi, pow, sin
 from sys import exit
-import glob
+from glob import glob
 import ctypes
-import math
 import pygame
 import win32api
 import win32con
@@ -100,7 +99,7 @@ def new_cfg(cfg_name: str):
 
 # When called will check to see if the required folder structure exists.
 def pre_checks(cfg_name: str):
-    if not glob.glob('./assets'):
+    if not glob('./assets'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets\" Folder missing. Creating a new one.',
                                             'Missing Folders', 65) == 2:
             exit()
@@ -114,28 +113,28 @@ def pre_checks(cfg_name: str):
             mkdir('./assets/shortcut_assets/shortcut(s)')
             mkdir('./assets/shortcut_assets/icon(s)')
 
-    if not glob.glob('./assets/application_icon'):
+    if not glob('./assets/application_icon'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets/application_icon\" Folder missing. Creating a new one.',
                                             'Missing Folder', 65) == 2:
             exit()
         else:
             mkdir('./assets/application_icon')
 
-    if not glob.glob('./assets/font(s)'):
+    if not glob('./assets/font(s)'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets/font(s)\" Folder missing. Creating a new one.',
                                             'Missing Folder', 65) == 2:
             exit()
         else:
             mkdir('./assets/font(s)')
 
-    if not glob.glob('./assets/wheel(s)'):
+    if not glob('./assets/wheel(s)'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets/wheel(s)\" Folder missing. Creating a new one.',
                                             'Missing Folder', 65) == 2:
             exit()
         else:
             mkdir('./assets/wheel(s)')
 
-    if not glob.glob('./assets/shortcut_assets'):
+    if not glob('./assets/shortcut_assets'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets/shortcut_assets\" Folder missing. Creating a new one.',
                                             'Missing Folders', 65) == 2:
             exit()
@@ -144,45 +143,45 @@ def pre_checks(cfg_name: str):
             mkdir('./assets/shortcut_assets/shortcut(s)')
             mkdir('./assets/shortcut_assets/icon(s)')
 
-    if not glob.glob('./assets/shortcut_assets/shortcut(s)'):
+    if not glob('./assets/shortcut_assets/shortcut(s)'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets/shortcut_assets/shortcut(s)\" Folder missing. Creating a new'
                                                ' one.', 'Missing Folder', 65) == 2:
             exit()
         else:
             mkdir('./assets/shortcut_assets/shortcut(s)')
 
-    if not glob.glob('./assets/shortcut_assets/icon(s)'):
+    if not glob('./assets/shortcut_assets/icon(s)'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets/shortcut_assets/icon(s)\" Folder missing. Creating a '
                                                'new one.', 'Missing Folder', 65) == 2:
             exit()
         else:
             mkdir('./assets/shortcut_assets/icon(s)')
 
-    if not glob.glob(f'./assets/{cfg_name}.json'):
+    if not glob(f'./assets/{cfg_name}.json'):
         if ctypes.windll.user32.MessageBoxW(0, f'\"./assets/{cfg_name}.json\" File missing. Creating a new one.',
                                             'Missing File', 65) == 2:
             exit()
         else:
             new_cfg(cfg_name)
 
-    if not glob.glob('./assets/application_icon/icon.png'):
+    if not glob('./assets/application_icon/icon.png'):
         if ctypes.windll.user32.MessageBoxW(0, 'You need one img in \"./assets/application_icon\" named icon.png',
                                             'Missing File', 48):
             exit()
 
-    if not any(glob.glob(f'./assets/font(s)/*.{x}') for x in ['ttf', 'otf']):
+    if not any(glob(f'./assets/font(s)/*.{x}') for x in ['ttf', 'otf']):
         if ctypes.windll.user32.MessageBoxW(0, 'You need at least one font in \"./assets/font(s)\"', 'Missing File',
                                             48):
             exit()
 
-    if not any(glob.glob(f'./assets/wheel(s)/*.{x}') for x in ['bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm',
-                                                               'pnm', 'pcx']):
+    if not any(glob(f'./assets/wheel(s)/*.{x}') for x in ['bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm',
+                                                          'pnm', 'pcx']):
         if ctypes.windll.user32.MessageBoxW(0, 'You need at least one img in \"./assets/wheel(s)\"', 'Missing File',
                                             48):
             exit()
 
-    if not any(glob.glob(f'./assets/shortcut_assets/icon(s)/*.{x}') for x in ['bmp', 'gif', 'jpeg', 'png', 'tiff',
-                                                                              'webp', 'xpm', 'pnm', 'pcx']):
+    if not any(glob(f'./assets/shortcut_assets/icon(s)/*.{x}') for x in ['bmp', 'gif', 'jpeg', 'png', 'tiff',
+                                                                         'webp', 'xpm', 'pnm', 'pcx']):
         if ctypes.windll.user32.MessageBoxW(0, 'You need at least one img in \"./assets/shortcut_assets/icon(s)\"',
                                             'Missing File', 48):
             exit()
@@ -221,7 +220,7 @@ def load_wheel():
     wheels = []
 
     for ext in ['bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm', 'pnm', 'pcx']:
-        for file in glob.glob(f'./assets/wheel(s)/*.{ext}'):
+        for file in glob(f'./assets/wheel(s)/*.{ext}'):
             wheels.append(file)
 
     Variables.wheel_list = wheels
@@ -232,7 +231,7 @@ def load_font():
     fonts = []
 
     for x in ['ttf', 'otf']:
-        for file in glob.glob(f'./assets/font(s)/*.{x}'):
+        for file in glob(f'./assets/font(s)/*.{x}'):
             fonts.append(file)
 
     Variables.font_list = fonts
@@ -242,14 +241,14 @@ def load_font():
 def load_icon():
     icons = []
 
-    for i in os.listdir("./assets/shortcut_assets/icon(s)/"):
-        if os.path.isfile(os.path.join("./assets/shortcut_assets/icon(s)/", i)):
+    for i in listdir("./assets/shortcut_assets/icon(s)/"):
+        if path.isfile(path.join("./assets/shortcut_assets/icon(s)/", i)):
             if i.lower().endswith(('.bmp', '.gif', '.jpeg', '.png', '.tiff', '.webp', '.xpm', '.pnm', '.pcx')):
                 icons.append((
                     i,
                     pygame.transform.scale(
-                        pygame.image.load(os.path.join("./assets/shortcut_assets/icon(s)/", i)), (64, 64)),
-                    os.path.join("./assets/shortcut_assets/icon(s)/", i)
+                        pygame.image.load(path.join("./assets/shortcut_assets/icon(s)/", i)), (64, 64)),
+                    path.join("./assets/shortcut_assets/icon(s)/", i)
                 ))
 
     Variables.icon_list = icons
@@ -305,10 +304,10 @@ def draw_icon(pointer, drag, offset, surf):
                 surf.blit(
                     i[1],
                     (
-                        (500 - math.cos((math.pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space)
+                        (500 - cos((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space)
                         - 32 + offset,
                         (
-                                math.sin((math.pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space
+                                sin((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space
                         ) - 32 - offset
                     )
                 ),
@@ -329,8 +328,8 @@ def draw_icon(pointer, drag, offset, surf):
         text.set_colorkey((0, 0, 0))
         surf.blit(
             text,
-            ((500 - math.cos((math.pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space) + 48 + offset,
-             (math.sin((math.pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space) - 16 - offset)
+            ((500 - cos((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space) + 48 + offset,
+             (sin((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space) - 16 - offset)
         )
 
     return icon_buttons
@@ -350,7 +349,7 @@ def main_loop():
     bangle = 0
     xt = 0
     tim = 0
-    off = math.pow(25, -tim + 2)
+    off = pow(25, -tim + 2)
     pointer = 0
     drag = 0
     clicks = draw_icon(pointer, drag, off, Variables.win)
@@ -361,7 +360,7 @@ def main_loop():
             xt += 0.5
         dt = glock.tick(144)
         tim += dt / 1000
-        off = math.pow(25, -tim + 2)
+        off = pow(25, -tim + 2)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -370,13 +369,13 @@ def main_loop():
                     for icons in clicks:
                         j = icons[1]
                         if icons[0].collidepoint(*pygame.mouse.get_pos()):
-                            if glob.glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.lnk'):
+                            if glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.lnk'):
                                 system(f'start "" "{j.replace("icon_images", "shortcuts")[:-4]}.lnk"')
                                 running = False
-                            elif glob.glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.url'):
+                            elif glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.url'):
                                 system(f'start "" "{j.replace("icon_images", "shortcuts")[:-4]}.url"')
                                 running = False
-                            elif glob.glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.json'):
+                            elif glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.json'):
                                 # Insert json hell here.
 
                                 with open(f'{j.replace("icon_images", "shortcuts")[:-4]}.json', 'r') as shortcut_json:
@@ -410,7 +409,7 @@ def main_loop():
 
         bangle += .01 * dt + off / 20
         drag *= .7
-        off2 = math.pow(xt, 2)
+        off2 = pow(xt, 2)
         draw_center_rotate(Variables.win, pygame.transform.smoothscale(Variables.wheel_chosen_wheel.convert(),
                                                                        (Variables.win_width * 2,
                                                                         Variables.win_height * 2)).convert(),
