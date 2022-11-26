@@ -57,6 +57,9 @@ class Variables:
 
     icon_wheel_chosen_font: str
 
+    # Other
+    penis_mode: bool
+
 
 # When called will create a new cfg file.
 def new_cfg(cfg_name: str):
@@ -213,6 +216,12 @@ def load_cfg(cfg_name: str):
     Variables.icon_wheel_position_y = cfg['icon_wheel_variables']['position_y']
     Variables.icon_wheel_space_from_center = cfg['icon_wheel_variables']['space_from_center']
     Variables.icon_wheel_density = cfg['icon_wheel_variables']['density']
+
+    # Other
+    try:
+        Variables.penis_mode = cfg['penis_mode']
+    except:
+        Variables.penis_mode = False
 
 
 # When called will load the wheel(s) from ./assets/wheel(s) into a list.
@@ -417,6 +426,9 @@ def main_loop():
 
         pointer %= len(Variables.icon_list)
         clicks = draw_icon(pointer, drag, off + off2, Variables.win)
+
+        if Variables.penis_mode:
+            draw_penis(Variables.win, bangle)
 
         pygame.display.flip()
 
