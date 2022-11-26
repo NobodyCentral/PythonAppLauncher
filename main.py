@@ -220,7 +220,7 @@ def load_cfg(cfg_name: str):
     # Other
     try:
         Variables.penis_mode = cfg['penis_mode']
-    except:
+    finally:
         Variables.penis_mode = False
 
 
@@ -313,11 +313,10 @@ def draw_icon(pointer, drag, offset, surf):
                 surf.blit(
                     i[1],
                     (
-                        (500 - cos((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space)
-                        - 32 + offset,
-                        (
-                                sin((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space
-                        ) - 32 - offset
+                        (Variables.icon_wheel_position_x - cos((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)
+                                                               ) * space) - 32 + offset,
+                        (Variables.icon_wheel_position_y + sin((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)
+                                                               ) * space) - 32 - offset
                     )
                 ),
                 i[2]
@@ -337,8 +336,10 @@ def draw_icon(pointer, drag, offset, surf):
         text.set_colorkey((0, 0, 0))
         surf.blit(
             text,
-            ((500 - cos((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space) + 48 + offset,
-             (sin((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space) - 16 - offset)
+            ((Variables.icon_wheel_position_x - cos((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space)
+             + 48 + offset,
+             (Variables.icon_wheel_position_y + sin((pi / (icon_density * 2)) * (n - drag + 1 / icon_density)) * space)
+             - 16 - offset)
         )
 
     return icon_buttons
@@ -350,6 +351,17 @@ def draw_center_rotate(surf, image, top_left, angle):
     new_rect = rotated_image.get_rect(center=image.get_rect(topleft=top_left).center)
 
     surf.blit(rotated_image, new_rect)
+
+
+# Secret mode.
+def draw_penis(surf, offset):
+    p_surf = pygame.font.SysFont("Comic Sans MS", 30).render("penis ", False, (255, 255, 255),
+                                                             Variables.transparent_colour)
+    p_surf.set_colorkey(Variables.transparent_colour)
+    p_width, p_height = p_surf.get_width(), p_surf.get_height()
+    for x in range(-100 + int(offset*5 % p_width), Variables.win_width, p_width):
+        for y in range(-100 + int(offset*5 % p_height), Variables.win_height, p_height):
+            surf.blit(p_surf, (x, y))
 
 
 # This function contains the main loop for pygame and is in a function because other stuff need to run first.
@@ -422,7 +434,8 @@ def main_loop():
         draw_center_rotate(Variables.win, pygame.transform.smoothscale(Variables.wheel_chosen_wheel.convert(),
                                                                        (Variables.win_width * 2,
                                                                         Variables.win_height * 2)).convert(),
-                           (off + off2, -Variables.win_width - off - off2), bangle)
+                           (-Variables.win_width + off + off2 + Variables.wheel_position_x,
+                            -Variables.win_height - off - off2 + Variables.wheel_position_y), bangle)
 
         pointer %= len(Variables.icon_list)
         clicks = draw_icon(pointer, drag, off + off2, Variables.win)
