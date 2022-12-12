@@ -220,7 +220,7 @@ def load_cfg(cfg_name: str):
     # Other
     try:
         Variables.penis_mode = cfg['penis_mode']
-    finally:
+    except:
         Variables.penis_mode = False
 
 
