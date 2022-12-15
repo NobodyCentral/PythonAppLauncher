@@ -220,7 +220,7 @@ def load_cfg(cfg_name: str):
     # Other
     try:
         Variables.penis_mode = cfg['penis_mode']
-    except:
+    except:  # NOQA E722
         Variables.penis_mode = False
 
 
