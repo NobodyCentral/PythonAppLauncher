@@ -1,4 +1,3 @@
-from os import path, listdir
 from json import load as json_load
 from json import dump as json_dump
 from random import choice as ran_choice
@@ -12,6 +11,7 @@ import pygame
 import win32api
 import win32con
 import win32gui
+import os
 
 
 pygame.init()
@@ -226,41 +226,35 @@ def load_cfg(cfg_name: str):
 
 # When called will load the wheel(s) from ./assets/wheel(s) into a list.
 def load_wheel():
-    wheels = []
+    wheels = [glob(f'./assets/wheel(s)/*.{ext}') for ext in
+              ('bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm', 'pnm', 'pcx')]
 
-    for ext in ['bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm', 'pnm', 'pcx']:
-        for file in glob(f'./assets/wheel(s)/*.{ext}'):
-            wheels.append(file)
+    wheels = [item for sublist in wheels for item in sublist]
 
     Variables.wheel_list = wheels
 
 
 # When called will load font(s) from ./assets/font(s) into a list.
 def load_font():
-    fonts = []
+    fonts = [glob(f'./assets/font(s)/*.{ext}') for ext in ('ttf', 'otf')]
 
-    for x in ['ttf', 'otf']:
-        for file in glob(f'./assets/font(s)/*.{x}'):
-            fonts.append(file)
+    fonts = [item for sublist in fonts for item in sublist]
 
     Variables.font_list = fonts
 
 
 # When called will load shortcut icon(s) from ./assets/shortcut_assets/icon(s) into a list.
 def load_icon():
-    icons = []
+    icons = [glob(f'./assets/shortcut_assets/icon(s)/*.{ext}') for ext in
+             ('bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm', 'pnm', 'pcx')]
 
-    for i in listdir("./assets/shortcut_assets/icon(s)/"):
-        if path.isfile(path.join("./assets/shortcut_assets/icon(s)/", i)):
-            if i.lower().endswith(('.bmp', '.gif', '.jpeg', '.png', '.tiff', '.webp', '.xpm', '.pnm', '.pcx')):
-                icons.append((
-                    i,
-                    pygame.transform.scale(
-                        pygame.image.load(path.join("./assets/shortcut_assets/icon(s)/", i)), (64, 64)),
-                    path.join("./assets/shortcut_assets/icon(s)/", i)
-                ))
+    icons = [item for sublist in icons for item in sublist]
 
-    Variables.icon_list = icons
+    comp_icons = []
+    for file in icons:
+        comp_icons.append((os.path.basename(file), pygame.transform.scale(pygame.image.load(file), (64, 64)), file))
+
+    Variables.icon_list = comp_icons
 
 
 # When called will initialize all assets previously loaded with pygame and resize them.
@@ -379,7 +373,7 @@ def main_loop():
     while running or xt <= 25:
         if not running:
             xt += 0.5
-        dt = glock.tick(144)
+        dt = glock.tick(60)
         tim += dt / 1000
         off = pow(25, -tim + 2)
         for event in pygame.event.get():
