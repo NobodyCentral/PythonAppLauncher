@@ -11,6 +11,7 @@ import pygame
 import win32api
 import win32con
 import win32gui
+import asyncio
 import os
 
 
@@ -62,7 +63,7 @@ class Variables:
 
 
 # When called will create a new cfg file.
-def new_cfg(cfg_name: str):
+async def new_cfg(cfg_name: str):
     new_cfg_content = {
         'transparent_colour': {
             'r': 1,
@@ -101,14 +102,14 @@ def new_cfg(cfg_name: str):
 
 
 # When called will check to see if the required folder structure exists.
-def pre_checks(cfg_name: str):
+async def pre_checks(cfg_name: str):
     if not glob('./assets'):
         if ctypes.windll.user32.MessageBoxW(0, '\"./assets\" Folder missing. Creating a new one.',
                                             'Missing Folders', 65) == 2:
             exit()
         else:
             mkdir('./assets')
-            new_cfg(cfg_name)
+            await new_cfg(cfg_name)
             mkdir('./assets/application_icon')
             mkdir('./assets/font(s)')
             mkdir('./assets/wheel(s)')
@@ -165,7 +166,7 @@ def pre_checks(cfg_name: str):
                                             'Missing File', 65) == 2:
             exit()
         else:
-            new_cfg(cfg_name)
+            await new_cfg(cfg_name)
 
     if not glob('./assets/application_icon/icon.png'):
         if ctypes.windll.user32.MessageBoxW(0, 'You need one img in \"./assets/application_icon\" named icon.png',
@@ -191,7 +192,7 @@ def pre_checks(cfg_name: str):
 
 
 # When called will set the variables from cfg.
-def load_cfg(cfg_name: str):
+async def load_cfg(cfg_name: str):
     with open(f'./assets/{cfg_name}.json', 'r') as cfg_file:
         cfg = json_load(cfg_file)
 
@@ -225,7 +226,7 @@ def load_cfg(cfg_name: str):
 
 
 # When called will load the wheel(s) from ./assets/wheel(s) into a list.
-def load_wheel():
+async def load_wheel():
     wheels = [glob(f'./assets/wheel(s)/*.{ext}') for ext in
               ('bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm', 'pnm', 'pcx')]
 
@@ -235,7 +236,7 @@ def load_wheel():
 
 
 # When called will load font(s) from ./assets/font(s) into a list.
-def load_font():
+async def load_font():
     fonts = [glob(f'./assets/font(s)/*.{ext}') for ext in ('ttf', 'otf')]
 
     fonts = [item for sublist in fonts for item in sublist]
@@ -244,7 +245,7 @@ def load_font():
 
 
 # When called will load shortcut icon(s) from ./assets/shortcut_assets/icon(s) into a list.
-def load_icon():
+async def load_icon():
     icons = [glob(f'./assets/shortcut_assets/icon(s)/*.{ext}') for ext in
              ('bmp', 'gif', 'jpeg', 'png', 'tiff', 'webp', 'xpm', 'pnm', 'pcx')]
 
@@ -258,7 +259,7 @@ def load_icon():
 
 
 # When called will initialize all assets previously loaded with pygame and resize them.
-def initialize_assets():
+async def initialize_assets():
     Variables.win_icon = pygame.image.load('./assets/application_icon/icon.png')
 
     Variables.wheel_chosen_wheel = pygame.image.load(ran_choice(Variables.wheel_list))
@@ -267,7 +268,7 @@ def initialize_assets():
 
 
 # When called will generate a usable window and color key the transparent colour.
-def create_window():
+async def create_window():
     window = pygame.display.set_mode((Variables.win_width, Variables.win_height), pygame.NOFRAME)
 
     window.fill(Variables.transparent_colour)
@@ -348,7 +349,7 @@ def draw_center_rotate(surf, image, top_left, angle):
 
 
 # Secret mode.
-def draw_penis(surf, offset):
+async def draw_penis(surf, offset):
     p_surf = pygame.font.SysFont("Comic Sans MS", 30).render("penis ", False, (255, 255, 255),
                                                              Variables.transparent_colour)
     p_surf.set_colorkey(Variables.transparent_colour)
@@ -359,7 +360,7 @@ def draw_penis(surf, offset):
 
 
 # This function contains the main loop for pygame and is in a function because other stuff need to run first.
-def main_loop():
+async def main_loop():
     glock = pygame.time.Clock()
     bangle = 0
     xt = 0
@@ -371,6 +372,8 @@ def main_loop():
 
     running = True
     while running or xt <= 25:
+        Variables.win.fill(Variables.transparent_colour)
+
         if not running:
             xt += 0.5
         dt = glock.tick(60)
@@ -384,16 +387,16 @@ def main_loop():
                     for icons in clicks:
                         j = icons[1]
                         if icons[0].collidepoint(*pygame.mouse.get_pos()):
-                            if glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.lnk'):
-                                system(f'start "" "{j.replace("icon_images", "shortcuts")[:-4]}.lnk"')
+                            if glob(f'{j.replace("icon(s)", "shortcut(s)")[:-4]}.lnk'):
+                                system(f'start "" "{j.replace("icon(s)", "shortcut(s)")[:-4]}.lnk"')
                                 running = False
-                            elif glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.url'):
-                                system(f'start "" "{j.replace("icon_images", "shortcuts")[:-4]}.url"')
+                            elif glob(f'{j.replace("icon(s)", "shortcut(s)")[:-4]}.url'):
+                                system(f'start "" "{j.replace("icon(s)", "shortcut(s)")[:-4]}.url"')
                                 running = False
-                            elif glob(f'{j.replace("icon_images", "shortcuts")[:-4]}.json'):
+                            elif glob(f'{j.replace("icon(s)", "shortcut(s)")[:-4]}.json'):
                                 # Insert json hell here.
 
-                                with open(f'{j.replace("icon_images", "shortcuts")[:-4]}.json', 'r') as shortcut_json:
+                                with open(f'{j.replace("icon(s)", "shortcut(s)")[:-4]}.json', 'r') as shortcut_json:
                                     path2open = json_load(shortcut_json)  # Reading the file
 
                                     system(f'start "" "{path2open["path"]}"')
@@ -425,6 +428,7 @@ def main_loop():
         bangle += .01 * dt + off / 20
         drag *= .7
         off2 = pow(xt, 2)
+
         draw_center_rotate(Variables.win, pygame.transform.smoothscale(Variables.wheel_chosen_wheel.convert(),
                                                                        (Variables.win_width * 2,
                                                                         Variables.win_height * 2)).convert(),
@@ -435,7 +439,7 @@ def main_loop():
         clicks = draw_icon(pointer, drag, off + off2, Variables.win)
 
         if Variables.penis_mode:
-            draw_penis(Variables.win, bangle)
+            await draw_penis(Variables.win, bangle)
 
         pygame.display.flip()
 
@@ -443,17 +447,17 @@ def main_loop():
 
 
 # This is the main function.
-def main(cfg_name):
-    pre_checks(cfg_name)
-    load_cfg(cfg_name)
-    load_wheel()
-    load_font()
-    load_icon()
-    initialize_assets()
-    create_window()
-    main_loop()
+async def main(cfg_name):
+    await pre_checks(cfg_name)
+    await load_cfg(cfg_name)
+    await load_wheel()
+    await load_font()
+    await load_icon()
+    await initialize_assets()
+    await create_window()
+    await main_loop()
 
 
 # Makes sure that it's the one being run first.
 if __name__ == '__main__':
-    main('cfg')
+    asyncio.run(main('cfg'))
