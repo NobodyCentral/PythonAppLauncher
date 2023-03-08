@@ -1,0 +1,25 @@
+{
+    "transparent_colour": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+    },
+    "window_variables": {
+        "title": "Launcher",
+        "width": 500,
+        "height": 500,
+        "position_x": 1420,
+        "position_y": 0
+    },
+    "wheel_variables": {
+        "position_x": 500,
+        "position_y": 0,
+        "passive_spin_speed": 1
+    },
+    "icon_wheel_variables": {
+        "position_x": 500,
+        "position_y": 0,
+        "space_from_center": 335,
+        "density": 4.5
+    }
+}
